@@ -1,22 +1,28 @@
 <?php
+
 namespace App\Controller;
 
-class ArticlesController extends AppController {
-    public function initialize(): void {
+class ArticlesController extends AppController
+{
+    public function initialize(): void
+    {
         parent::initialize();
     }
 
-    public function index(): void {
+    public function index(): void
+    {
         $articles = $this->Paginator->paginate($this->Articles->find());
         $this->set(compact('articles'));
     }
 
-    public function view($slug = null): void {
+    public function view($slug = null): void
+    {
         $article = $this->Articles->findBySlug($slug)->contain('Tags')->firstOrFail();
         $this->set(compact('article'));
     }
 
-    public function add(): void {
+    public function add(): void
+    {
         $article = $this->Articles->newEmptyEntity();
 
         if ($this->request->is('post')) {
@@ -35,7 +41,8 @@ class ArticlesController extends AppController {
         $this->set(compact('tags', 'article'));
     }
 
-    public function edit($slug): void {
+    public function edit($slug): void
+    {
         $article = $this->Articles->findBySlug($slug)->contain('Tags')->firstOrFail();
 
         if ($this->request->is(['post', 'put'])) {
@@ -47,13 +54,14 @@ class ArticlesController extends AppController {
             }
             $this->Flash->error(__('Unable to update your article.'));
         }
-        
+
         $tags = $this->Articles->Tags->find('list')->all();
 
         $this->set(compact('tags', 'article'));
     }
 
-    public function delete($slug): void {
+    public function delete($slug): void
+    {
         $this->request->allowMethod(['post', 'delete']);
 
         $article = $this->Articles->findBySlug($slug)->firstOrFail();
@@ -64,7 +72,8 @@ class ArticlesController extends AppController {
         }
     }
 
-    public function tags(): void {
+    public function tags(): void
+    {
         $tags = $this->request->getParam('pass');
         $articles = $this->Articles->find('tagged', compact('tags'))->all();
         $this->set(compact('articles', 'tags'));
